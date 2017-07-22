@@ -1,2 +1,2 @@
 # ReactiveBroadcast
-RxJava binding APIs for Android BroadcastReceiver
+RxJava binding APIs for Android BroadcastReceiver -
