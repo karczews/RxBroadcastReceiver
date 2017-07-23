@@ -27,5 +27,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:26.+'
-    testCompile 'junit:junit:4.12'
+
+    testCompile deps.junit
+    testCompile deps.robolectric
+    testCompile deps.mockitocore
 }
