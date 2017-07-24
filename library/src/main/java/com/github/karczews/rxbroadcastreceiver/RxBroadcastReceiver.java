@@ -58,15 +58,8 @@ class RxBroadcastReceiver extends Observable <Intent> {
 
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            if (!disposed.get()) {
+            if (!isDisposed()) {
                 observer.onNext(intent);
-                if (isOrderedBroadcast()) {
-                    setResultCode(Activity.RESULT_OK);
-                }
-            } else {
-                if (isOrderedBroadcast()) {
-                    abortBroadcast();
-                }
             }
         }
     }
