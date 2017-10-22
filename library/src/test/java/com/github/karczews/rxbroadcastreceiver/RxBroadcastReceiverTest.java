@@ -2,16 +2,27 @@ package com.github.karczews.rxbroadcastreceiver;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.HandlerThread;
+import android.os.Looper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
+import java.util.concurrent.Semaphore;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.TestObserver;
+import io.reactivex.schedulers.Schedulers;
 
+import static org.junit.Assert.assertEquals;
 import static org.robolectric.RuntimeEnvironment.application;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(manifest = Config.NONE)
 public class RxBroadcastReceiverTest {
 
     private static final IntentFilter testIntentFilter = new IntentFilter("testaction");
@@ -37,10 +48,10 @@ public class RxBroadcastReceiverTest {
     @Test
     public void shouldNotReceiveBroadcastAfterDisposed() {
         //GIVEN
-        TestObserver<Intent> observer = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter)
-                .test(true);
+        final Observable<Intent> observable = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter);
 
         //WHEN
+        final TestObserver<Intent> observer = observable.test(true);
         application.sendBroadcast(testIntent1);
         application.sendBroadcast(testIntent2);
         application.sendBroadcast(testIntent3);
@@ -48,4 +59,66 @@ public class RxBroadcastReceiverTest {
         observer.assertValueCount(0);
         observer.assertEmpty();
     }
+
+    @Test
+    public void shouldReturnErrorWhenSubscribeOnNonLooperThread() {
+        //GIVEN
+        final Observable<Intent> observable = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter)
+                .subscribeOn(Schedulers.newThread());
+
+        //WHEN
+        final TestObserver<Intent> observer = observable.test();
+
+        //THEN
+        observer.awaitTerminalEvent();
+        observer.assertTerminated();
+    }
+
+    @Test
+    public void shouldReceiveBroadcastOnLooperThread() throws InterruptedException {
+        //GIVEN
+        final Semaphore beforeLooperPrepare = new Semaphore(0);
+        final Semaphore afterLooperPrepare = new Semaphore(0);
+        //due to robolectic dirty hack to subscription to be run really on TestHandlerThread due to robolectric
+        final HandlerThread handlerThread = new HandlerThread("TestHandlerThread") {
+            @Override
+            protected void onLooperPrepared() {
+                try {
+                    beforeLooperPrepare.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                shadowOf(Looper.myLooper()).idle();
+                afterLooperPrepare.release();
+            }
+        };
+
+        handlerThread.start();
+        final Observable<Intent> observable = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter)
+                .subscribeOn(AndroidSchedulers.from(handlerThread.getLooper()));
+
+
+        //WHEN
+        final TestObserver<Intent> observer = observable.test();
+
+        beforeLooperPrepare.release();
+        afterLooperPrepare.acquire();
+
+        assertEquals(0, shadowOf(handlerThread.getLooper()).getScheduler().size());
+        application.sendBroadcast(testIntent1);
+        assertEquals(1, shadowOf(handlerThread.getLooper()).getScheduler().size());
+        application.sendBroadcast(testIntent2);
+        assertEquals(2, shadowOf(handlerThread.getLooper()).getScheduler().size());
+        application.sendBroadcast(testIntent3);
+        assertEquals(3, shadowOf(handlerThread.getLooper()).getScheduler().size());
+
+        shadowOf(handlerThread.getLooper()).idle();
+        //THEN
+
+        observer.assertValueCount(3);
+        observer.assertValues(testIntent1, testIntent2, testIntent3);
+    }
+
+
+
 }

@@ -1,10 +1,11 @@
 package com.github.karczews.rxbroadcastreceiver;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,8 +28,16 @@ class RxBroadcastReceiver extends Observable <Intent> {
 
     @Override
     protected void subscribeActual(final Observer <? super Intent> observer) {
+        if (!Preconditions.checkLooperThread(observer)) {
+            return;
+        }
+
         final ReceiverDisposable disposable = new ReceiverDisposable(context, observer);
-        context.registerReceiver(disposable, intentFilter);
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            context.registerReceiver(disposable, intentFilter);
+        } else {
+            context.registerReceiver(disposable, intentFilter, null, new Handler(Looper.myLooper()));
+        }
         observer.onSubscribe(disposable);
     }
 
