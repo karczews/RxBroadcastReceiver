@@ -18,6 +18,10 @@ RxBroadcastReceivers.fromIntentFilter(context, intentFilter)
         });
 ```
 
+
+What's new:
+- 1.0.2 library utilizes [Context#registerReceiver(BroadcastReceiver, filter, roadcastPermission, scheduler)](https://goo.gl/ytDVGb) method when subscription occurs on background thread looper.
+
 Download
 --------
 
