@@ -15,6 +15,7 @@ import io.reactivex.Observable;
 public final class RxBroadcastReceivers {
 
     private RxBroadcastReceivers() {
+        throw new AssertionError("No util class instances for you!");
     }
 
     /**

@@ -7,6 +7,7 @@ import io.reactivex.disposables.Disposables;
 
 public final class Preconditions {
     private Preconditions() {
+        throw new AssertionError("No util class instances for you!");
     }
 
     public static boolean checkLooperThread(final Observer observer) {

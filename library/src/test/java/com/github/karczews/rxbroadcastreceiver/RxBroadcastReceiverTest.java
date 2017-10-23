@@ -34,7 +34,7 @@ public class RxBroadcastReceiverTest {
     @Test
     public void shouldReceiveBroadcast() {
         //GIVEN
-        TestObserver<Intent> observer = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter)
+        final TestObserver<Intent> observer = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter)
                 .test();
         //WHEN
         application.sendBroadcast(testIntent1);
@@ -85,7 +85,7 @@ public class RxBroadcastReceiverTest {
             protected void onLooperPrepared() {
                 try {
                     beforeLooperPrepare.acquire();
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }
                 shadowOf(Looper.myLooper()).idle();
@@ -96,7 +96,6 @@ public class RxBroadcastReceiverTest {
         handlerThread.start();
         final Observable<Intent> observable = RxBroadcastReceivers.fromIntentFilter(application, testIntentFilter)
                 .subscribeOn(AndroidSchedulers.from(handlerThread.getLooper()));
-
 
         //WHEN
         final TestObserver<Intent> observer = observable.test();
@@ -118,7 +117,5 @@ public class RxBroadcastReceiverTest {
         observer.assertValueCount(3);
         observer.assertValues(testIntent1, testIntent2, testIntent3);
     }
-
-
 
 }
