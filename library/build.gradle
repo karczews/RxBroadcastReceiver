@@ -48,9 +48,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile deps.appcompatv7
     compile deps.rxandroid2
-
+    compile deps.supportannotations
     testCompile deps.junit
     testCompile deps.robolectric
     testCompile deps.mockitocore
