@@ -30,7 +30,7 @@ To use library with Gradle
 
 ```groovy
 dependencies {
-  compile 'com.github.karczews:rx2-broadcast-receiver:1.0.3'
+  compile 'com.github.karczews:rx2-broadcast-receiver:1.0.4'
 }
 ```
 
@@ -40,6 +40,6 @@ or using Maven:
 <dependency>
     <groupId>com.github.karczews</groupId>
     <artifactId>rx2-broadcast-receiver</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
