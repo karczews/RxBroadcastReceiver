@@ -5,6 +5,8 @@ import android.content.IntentFilter;
 import android.os.HandlerThread;
 import android.os.Looper;
 
+import com.github.karczews.utilsverifier.UtilsVerifier;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -116,6 +118,13 @@ public class RxBroadcastReceiverTest {
 
         observer.assertValueCount(3);
         observer.assertValues(testIntent1, testIntent2, testIntent3);
+    }
+
+    @Test
+    public void shouldBeHaveWellDefinedUtil() {
+        UtilsVerifier.forClass(RxBroadcastReceivers.class)
+                .withConstructorThrowing(AssertionError.class)
+                .verify();
     }
 
 }
