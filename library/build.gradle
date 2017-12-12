@@ -10,12 +10,6 @@ android {
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
     buildTypes {
         debug {
@@ -45,12 +39,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile deps.rxandroid2
-    compile deps.supportannotations
+    compile deps.rxAndroid2
+    compile deps.supportAnnotations
     testCompile deps.junit
     testCompile deps.robolectric
-    testCompile deps.mockitocore
+    testCompile deps.mockitoCore
+    testCompile deps.utilsVerifier
 }
