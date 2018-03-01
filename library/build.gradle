@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'jacoco'
 apply plugin: 'jacoco-android'
 apply from: '../gradle-mvn-push.gradle'
+apply from: '../gradle-mvn-local.gradle'
 
 
 android {
