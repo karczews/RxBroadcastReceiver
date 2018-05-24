@@ -22,6 +22,7 @@ RxBroadcastReceivers.fromIntentFilter(context, intentFilter)
 
 What's new:
 - 1.0.2 library utilizes [Context#registerReceiver(BroadcastReceiver, filter, broadcastPermission, scheduler)](https://goo.gl/ytDVGb) method when subscription occurs on background thread looper.
+- 1.0.5 fixed problem with manifest merger.
 
 Download
 --------
@@ -30,7 +31,7 @@ To use library with Gradle
 
 ```groovy
 dependencies {
-  compile 'com.github.karczews:rx2-broadcast-receiver:1.0.4'
+  compile 'com.github.karczews:rx2-broadcast-receiver:1.0.5'
 }
 ```
 
@@ -40,6 +41,6 @@ or using Maven:
 <dependency>
     <groupId>com.github.karczews</groupId>
     <artifactId>rx2-broadcast-receiver</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
