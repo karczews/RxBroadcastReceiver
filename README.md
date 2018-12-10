@@ -31,7 +31,7 @@ To use library with Gradle
 
 ```groovy
 dependencies {
-  compile 'com.github.karczews:rx2-broadcast-receiver:1.0.5'
+  implementation 'com.github.karczews:rx2-broadcast-receiver:1.0.5'
 }
 ```
 
