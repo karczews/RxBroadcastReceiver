@@ -12,10 +12,8 @@ Usage
 --------
 ```java
 RxBroadcastReceivers.fromIntentFilter(context, intentFilter)
-        .subscribe(new Consumer<Intent>() {
-          @Override public void accept(Intent broadcast) {
+        .subscribe(intent -> {
             // do something with broadcast
-          }
         });
 ```
 
