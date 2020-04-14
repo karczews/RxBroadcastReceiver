@@ -94,8 +94,8 @@ afterEvaluate { project ->
 
     task androidJavadocs(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
+        classpath += configurations.javadocDeps
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-        classpath += configurations.compile
         options {
             options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PUBLIC
             linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"

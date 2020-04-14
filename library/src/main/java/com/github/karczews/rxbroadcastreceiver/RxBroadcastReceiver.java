@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2017-present, RxBroadcastReceiver Contributors.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
@@ -7,8 +7,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
- * the License for the specific language governing permissions and limitations under the License.
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
  */
 package com.github.karczews.rxbroadcastreceiver;
 
@@ -20,68 +20,44 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.Cancellable;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-
-class RxBroadcastReceiver extends Observable <Intent> {
+class RxBroadcastReceiver implements ObservableOnSubscribe<Intent> {
 
     @NonNull
     private final Context context;
     @NonNull
     private final IntentFilter intentFilter;
 
-    public RxBroadcastReceiver(@NonNull final Context context, @NonNull final IntentFilter intentFilter) {
+    RxBroadcastReceiver(@NonNull final Context context, @NonNull final IntentFilter intentFilter) {
         this.context = context.getApplicationContext();
         this.intentFilter = intentFilter;
     }
 
     @Override
-    protected void subscribeActual(final Observer <? super Intent> observer) {
-        if (!Preconditions.checkLooperThread(observer)) {
+    public void subscribe(final ObservableEmitter<Intent> emitter) {
+        if (!Preconditions.checkLooperThread(emitter)) {
             return;
         }
+        final BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                emitter.onNext(intent);
+            }
+        };
 
-        final ReceiverDisposable disposable = new ReceiverDisposable(context, observer);
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            context.registerReceiver(disposable, intentFilter);
+            context.registerReceiver(receiver, intentFilter);
         } else {
-            context.registerReceiver(disposable, intentFilter, null, new Handler(Looper.myLooper()));
+            context.registerReceiver(receiver, intentFilter, null, new Handler(Looper.myLooper()));
         }
-        observer.onSubscribe(disposable);
-    }
-
-    private static class ReceiverDisposable extends BroadcastReceiver implements Disposable {
-        @NonNull
-        private final AtomicBoolean disposed = new AtomicBoolean(false);
-        @NonNull
-        private final Observer <? super Intent> observer;
-        @NonNull
-        private final Context context;
-
-        ReceiverDisposable(@NonNull final Context context, @NonNull final Observer <? super Intent> observer) {
-            this.observer = observer;
-            this.context = context;
-        }
-        @Override
-        public void dispose() {
-            if (disposed.compareAndSet(false, true)) {
-                context.unregisterReceiver(ReceiverDisposable.this);
+        emitter.setCancellable(new Cancellable() {
+            @Override
+            public void cancel() {
+                context.unregisterReceiver(receiver);
             }
-        }
-
-        @Override
-        public boolean isDisposed() {
-            return disposed.get();
-        }
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            if (!isDisposed()) {
-                observer.onNext(intent);
-            }
-        }
+        });
     }
 }
