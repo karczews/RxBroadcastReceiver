@@ -6,8 +6,7 @@ apply from: '../gradle-mvn-local.gradle'
 
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 9
@@ -39,11 +38,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile deps.rxAndroid2
-    compile deps.supportAnnotations
-    testCompile deps.junit
-    testCompile deps.robolectric
-    testCompile deps.mockitoCore
-    testCompile deps.utilsVerifier
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.rxJava2
+    implementation deps.rxAndroid2
+    implementation deps.supportAnnotations
+    testImplementation deps.junit
+    testImplementation deps.robolectric
+    testImplementation deps.mockitoCore
+    testImplementation deps.utilsVerifier
 }
