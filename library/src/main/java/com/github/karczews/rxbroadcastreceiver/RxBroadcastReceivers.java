@@ -15,8 +15,8 @@ package com.github.karczews.rxbroadcastreceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.annotation.CheckResult;
-import android.support.annotation.NonNull;
+import androidx.annotation.CheckResult;
+import androidx.annotation.NonNull;
 
 import io.reactivex.Observable;
 

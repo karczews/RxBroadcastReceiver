@@ -6,12 +6,7 @@ apply from: '../gradle-mvn-local.gradle'
 
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "28.0.3"
-
-    configurations {
-        javadocDeps.extendsFrom implementation
-    }
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 14
@@ -44,6 +39,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.rxJava2
     implementation deps.rxAndroid2
     implementation deps.supportAnnotations
     testImplementation deps.junit
