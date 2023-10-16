@@ -4,7 +4,7 @@ ext.deps = [
         supportAnnotations: 'androidx.annotation:annotation:1.1.0',
         junit             : 'junit:junit:4.13.2',
         truth             : 'com.google.truth:truth:1.1.2',
-        robolectric       : 'org.robolectric:robolectric:4.3.1',
+        robolectric       : 'org.robolectric:robolectric:4.6.1',
         mockitoCore       : 'org.mockito:mockito-core:3.8.0',
         utilsVerifier     : 'com.github.karczews:utilsverifier:1.0.0'
 ]
