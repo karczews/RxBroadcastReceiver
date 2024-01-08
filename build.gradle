@@ -15,7 +15,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
+        classpath 'com.android.tools.build:gradle:8.2.1'
         classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
         classpath 'digital.wup:android-maven-publish:3.6.3'
     }
